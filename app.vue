@@ -3,29 +3,34 @@ import { Gender, Popularity, Length, names } from "@/data";
 
 interface OptionsState {
   gender: Gender;
-  poularity: Popularity;
+  popularity: Popularity;
   length: Length;
 }
 
 const options = reactive<OptionsState>({
   gender: Gender.GIRL,
-  poularity: Popularity.TRENDY,
+  popularity: Popularity.TRENDY,
   length: Length.SHORT,
 });
 
-const computeSelectedName = () => {
-  const filterNames = names
+const computeSelectedNames = () => {
+  const filteredNames = names
     .filter((name) => name.gender === options.gender)
-    .filter((name) => name.popularity === options.poularity)
+    .filter((name) => name.popularity === options.popularity)
     .filter((name) => {
       if (options.length === Length.ALL) return true;
       else return name.length === options.length;
     });
-
-  selectedNames.value = filterNames.map((name) => name.name);
+  selectedNames.value = filteredNames.map((name) => name.name);
 };
 
 const selectedNames = ref<string[]>([]);
+
+const removeName = (index: number) => {
+  const filteredNames = [...selectedNames.value];
+  filteredNames.splice(index, 1);
+  selectedNames.value = filteredNames;
+};
 
 const optionsArray = [
   {
@@ -57,10 +62,16 @@ const optionsArray = [
         :option="option"
         :options="options"
       />
-      <button class="primary" @click="computeSelectedName">Find Names</button>
+      <button class="primary" @click="computeSelectedNames">Find Names</button>
     </div>
     <div class="cards-container">
-      <CardName v-for="name in selectedNames" :key="name" :name="name" />
+      <CardName
+        v-for="(name, index) in selectedNames"
+        :key="name"
+        :name="name"
+        @remove="() => removeName(index)"
+        :index="index"
+      />
     </div>
   </div>
 </template>

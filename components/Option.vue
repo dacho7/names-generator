@@ -15,13 +15,16 @@ interface OptionProps {
 }
 
 const props = defineProps<OptionProps>();
+console.log(props.option.category);
 
 const computeButtonClasses = (value, index) => {
   const classNames = [];
   if (props.options[props.option.category] === value) {
     classNames.push("option-active");
   }
-  if (index === 0) classNames.push("option-left");
+  if (index === 0) {
+    classNames.push("option-left");
+  }
   if (index === props.option.buttons.length - 1)
     classNames.push("option-right");
   return classNames.join(" ");
